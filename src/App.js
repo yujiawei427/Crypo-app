@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import CoinDisplay from './components/CoinDisplay';
 import Title from './components/Title';
 
-const AttritubesLayout = styled.div``;
-
 const Layout = styled.div`
   margin: 0 calc(10%);
 `;

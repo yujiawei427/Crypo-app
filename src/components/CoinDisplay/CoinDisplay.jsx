@@ -65,7 +65,7 @@ class CoinDisplay extends React.Component {
                 <Order>{list.order}</Order>
                 <CoinName>{list.coinName}</CoinName>
                 <Price>{list.price}</Price>
-                <OneDay>{list.oneDay}</OneDay>
+                <OneDay>{`${list.oneDay.toFixed(2)}%`}</OneDay>
                 <SevenDays>{`${list.sevenDays.toFixed(2)}%`}</SevenDays>
                 <Volume>${list.volume}</Volume>
                 <MarketCap>${list.marketCap}</MarketCap>
@@ -82,6 +82,8 @@ CoinDisplay.propTypes = {
   lists: PropTypes.arrayOf(PropTypes.shape({
     Order: PropTypes.number,
     coinName: PropTypes.string,
+    oneDay: PropTypes.number,
+    sevenDays: PropTypes.number,
     price: PropTypes.number,
     volume: PropTypes.number,
     marketCap: PropTypes.number,
