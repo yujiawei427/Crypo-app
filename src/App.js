@@ -39,15 +39,55 @@ const lists = [{
 ];
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: {}
+    };
+  }
+
+  componentDidMount() {
+    //has already pushed to heroku if not works use localhost: http://localhost:3001/currency
+    fetch('https://crypo-api.herokuapp.com/currency') 
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
+
   render() {
-    return (
-      <Layout>
+    const { error, isLoaded, items } = this.state;
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Loading...</div>;
+    } else {
+      return (
+        <Layout>
         <Head>TOP Coins by Market Cap</Head>
         <Title/>
         <hr/>
         <CoinDisplay lists={lists} />
+        <hr/>
+        <div>
+        </div>
       </Layout>
-    );
+      );
+    }
   }
 }
 
