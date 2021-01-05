@@ -69,13 +69,13 @@ class CoinDisplay extends React.Component {
     return (
       <>
         <Currency>
-          <Order>{order}</Order>
-          <CoinName>{coinName}</CoinName>
-          <Price>{price}</Price>
-          <OneDay oneDay={oneDay}>{`${(oneDay*100).toFixed(2)}%`}</OneDay>
-          <SevenDays sevenDays={sevenDays}>{`${(sevenDays*100).toFixed(2)}%`}</SevenDays>
-          <Volume>${volume.toLocaleString()}</Volume>
-          <MarketCap>${marketCap.toLocaleString()}</MarketCap>
+          <Order data-testid="order">{order}</Order>
+          <CoinName data-testid="coinName">{coinName}</CoinName>
+          <Price data-testid="price">{price}</Price>
+          <OneDay oneDay={oneDay} data-testid="oneDay">{`${(oneDay*100).toFixed(2)}%`}</OneDay>
+          <SevenDays sevenDays={sevenDays} data-testid="sevenDays">{`${(sevenDays*100).toFixed(2)}%`}</SevenDays>
+          <Volume data-testid="volume">${volume.toLocaleString()}</Volume>
+          <MarketCap data-testid="marketCap">${marketCap.toLocaleString()}</MarketCap>
         </Currency>
         <hr/>
       </>
