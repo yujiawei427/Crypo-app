@@ -1,20 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Currency = styled.div`
   display: flex;
   justify-content: space-around;
   font-weight: 300;
   padding: 10px 0;
-`;
-
-const CurrencyList = styled.div`
-  list-style: none;
-`;
-
-const CurrencyItem = styled.ul`
-  margin-left: -40px;
 `;
 
 const Order = styled.div`
@@ -35,21 +27,29 @@ const Price = styled.div`
 const OneDay = styled.div`
   width: calc(100%/22*2 - 5px);
   text-align: right;
-  color: #e15241;
+  color: #4eaf0a;
 
-  ${({ list }) => (list.oneDay >= 0) && css` 
-        color: #4eaf0a;
-      `}
+  ${(props) => {
+    if (props.oneDay < 0) {
+      return css` 
+        color: #e15241;
+      `;
+    };
+  }}
 `;
 
 const SevenDays = styled.div`
   width: calc(100%/22*2 - 5px);
   text-align: right;
-  color: #e15241;
+  color: #4eaf0a;
 
-  ${({ list }) => (list.sevenDays >= 0) && css` 
-        color: #4eaf0a;
-      `}
+  ${(props) => {
+    if (props.sevenDays < 0) {
+      return css` 
+        color: #e15241;
+      `;
+    };
+  }}
 `;
 
 const Volume = styled.div`
@@ -64,40 +64,33 @@ const MarketCap = styled.div`
 
 class CoinDisplay extends React.Component {
   render() {
-    const {lists} = this.props;
+    const {order, coinName, price, oneDay, sevenDays, volume, marketCap} = this.props;
 
     return (
       <>
-        <CurrencyList>
-          {lists.map((list) => (
-            <CurrencyItem key={list.coinName}>
-              <Currency>
-                <Order>{list.order}</Order>
-                <CoinName>{list.coinName}</CoinName>
-                <Price>{list.price}</Price>
-                <OneDay>{`${(list.oneDay*100).toFixed(2)}%`}</OneDay>
-                <SevenDays>{`${(list.sevenDays*100).toFixed(2)}%`}</SevenDays>
-                <Volume>${list.volume.toLocaleString()}</Volume>
-                <MarketCap>${list.marketCap.toLocaleString()}</MarketCap>
-              </Currency>
-            </CurrencyItem>
-          ))}
-        </CurrencyList>
+        <Currency>
+          <Order>{order}</Order>
+          <CoinName>{coinName}</CoinName>
+          <Price>{price}</Price>
+          <OneDay oneDay={oneDay}>{`${(oneDay*100).toFixed(2)}%`}</OneDay>
+          <SevenDays sevenDays={sevenDays}>{`${(sevenDays*100).toFixed(2)}%`}</SevenDays>
+          <Volume>${volume.toLocaleString()}</Volume>
+          <MarketCap>${marketCap.toLocaleString()}</MarketCap>
+        </Currency>
+        <hr/>
       </>
     );
   }
 }
 
 CoinDisplay.propTypes = {
-  lists: PropTypes.arrayOf(PropTypes.shape({
-    Order: PropTypes.number,
-    coinName: PropTypes.string,
-    oneDay: PropTypes.number,
-    sevenDays: PropTypes.number,
-    price: PropTypes.number,
-    volume: PropTypes.number,
-    marketCap: PropTypes.number,
-  }).isRequired).isRequired
+  order: PropTypes.number.isRequired,
+  coinName: PropTypes.string.isRequired,
+  oneDay: PropTypes.number.isRequired,
+  sevenDays: PropTypes.number.isRequired,
+  price: PropTypes.number.isRequired,
+  volume: PropTypes.number.isRequired,
+  marketCap: PropTypes.number.isRequired,
 };
 
 export default CoinDisplay;

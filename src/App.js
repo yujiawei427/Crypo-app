@@ -11,6 +11,14 @@ const Head = styled.h1`
   text-align: center;
 `;
 
+const CurrencyList = styled.div`
+  list-style: none;
+`;
+
+const CurrencyItem = styled.ul`
+  margin-left: -40px;
+`;
+
 const lists = [{
   order: 1,
   coinName: "tezos",
@@ -190,16 +198,25 @@ class App extends React.Component {
       addSerial(newList);
 
       return (
-        
         <Layout>
         <Head>TOP Coins by Market Cap</Head>
         <Title/>
         <hr/>
-        <CoinDisplay lists={newList} />
-        <hr/>
-        <div>
-          {console.log(newList)}
-        </div>
+        <CurrencyList>
+          {newList.map((list) => (
+            <CurrencyItem key={list.coinName}>
+              <CoinDisplay 
+              order={list.order}
+              coinName={list.coinName} 
+              price={list.price} 
+              oneDay={list.oneDay}
+              sevenDays={list.sevenDays}
+              volume={list.volume} 
+              marketCap={list.marketCap} 
+              />
+            </CurrencyItem>
+          ))}
+        </CurrencyList>          
       </Layout>
       );
     }
