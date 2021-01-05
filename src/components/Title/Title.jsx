@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Currency = styled.div`
   display: flex;
   justify-content: space-around;
-  font-weight: 300;
+  font-weight: 600;
   padding: 10px 0;
 `;
 

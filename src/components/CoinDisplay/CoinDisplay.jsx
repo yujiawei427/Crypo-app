@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 const Currency = styled.div`
   display: flex;
@@ -35,11 +35,21 @@ const Price = styled.div`
 const OneDay = styled.div`
   width: calc(100%/22*2 - 5px);
   text-align: right;
+  color: #e15241;
+
+  ${({ list }) => (list.oneDay >= 0) && css` 
+        color: #4eaf0a;
+      `}
 `;
 
 const SevenDays = styled.div`
   width: calc(100%/22*2 - 5px);
   text-align: right;
+  color: #e15241;
+
+  ${({ list }) => (list.sevenDays >= 0) && css` 
+        color: #4eaf0a;
+      `}
 `;
 
 const Volume = styled.div`
@@ -65,10 +75,10 @@ class CoinDisplay extends React.Component {
                 <Order>{list.order}</Order>
                 <CoinName>{list.coinName}</CoinName>
                 <Price>{list.price}</Price>
-                <OneDay>{`${list.oneDay.toFixed(2)}%`}</OneDay>
-                <SevenDays>{`${list.sevenDays.toFixed(2)}%`}</SevenDays>
-                <Volume>${list.volume}</Volume>
-                <MarketCap>${list.marketCap}</MarketCap>
+                <OneDay>{`${(list.oneDay*100).toFixed(2)}%`}</OneDay>
+                <SevenDays>{`${(list.sevenDays*100).toFixed(2)}%`}</SevenDays>
+                <Volume>${list.volume.toLocaleString()}</Volume>
+                <MarketCap>${list.marketCap.toLocaleString()}</MarketCap>
               </Currency>
             </CurrencyItem>
           ))}

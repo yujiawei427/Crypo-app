@@ -47,7 +47,7 @@ const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumYester
 const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumSevenday;
 
 const calcDifference = (current, old) => {
-    return (current - old)/current ;
+  return (current - old)/current ;
 };
 
 const matchHistory = (name, list) => {
@@ -80,7 +80,6 @@ const setList = (list, yesterdayList, sevendayList) => {
 };
 
 const listOrder = (list) => {
-  let newList = [];
   let temp, i, j;
   for (i = 0; i < list.length - 1; i++) {
     for (j = 0; j < list.length - 1 - i; j++) {
@@ -198,6 +197,9 @@ class App extends React.Component {
         <hr/>
         <CoinDisplay lists={newList} />
         <hr/>
+        <div>
+          {console.log(newList)}
+        </div>
       </Layout>
       );
     }
