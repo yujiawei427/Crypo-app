@@ -39,13 +39,66 @@ const lists = [{
 ];
 
 const today = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}T13:00:00.000+00:00`;
-const assumToday = `2019-12-03T13:00:00.000+00:00` //assume Dec 04,2019 is today
-const assumYesterday = `2019-12-02T13:00:00.000+00:00`
-const assumSevenday = `2019-11-26T13:00:00.000+00:00`
+const assumToday = `2019-12-03T13:00:00.000+00:00`; //assume Dec 04,2019 is today
+const assumYesterday = `2019-12-02T13:00:00.000+00:00`;
+const assumSevenday = `2019-11-26T13:00:00.000+00:00`;
 const url = `https://crypo-api.herokuapp.com/currencies/` + assumToday;
 const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumYesterday;
 const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumSevenday;
 
+const calcDifference = (current, old) => {
+    return (current - old)/current ;
+};
+
+const matchHistory = (name, list) => {
+  let i;
+  for (i = 0; i < list.length; i++) {
+    if (list[i].Currency === name)
+      return list[i].Close;
+  }
+};
+
+const beNum = (number) => {
+  return Number(number.split(",").join(""));
+};
+
+const setList = (list, yesterdayList, sevendayList) => {
+  let newList = [];
+  let i;
+  for (i = 0; i < list.length; i++) {
+    newList.push({});
+    newList[i].coinName = list[i].Currency;
+    newList[i].price = beNum(list[i].Close);
+    newList[i].marketCap = beNum(list[i]["Market Cap"]);
+    newList[i].volume = beNum(list[i].Volume);
+    newList[i].oneDay = calcDifference(beNum(list[i].Close) ,beNum(matchHistory(list[i].Currency, yesterdayList)));
+    newList[i].sevenDays = calcDifference(beNum(list[i].Close) ,beNum(matchHistory(list[i].Currency, sevendayList)));
+    
+  }
+
+  return newList
+};
+
+const listOrder = (list) => {
+  let newList = [];
+  let temp, i, j;
+  for (i = 0; i < list.length - 1; i++) {
+    for (j = 0; j < list.length - 1 - i; j++) {
+      if (list[j].marketCap < list[j+1].marketCap) {
+        temp = list[j];
+        list[j] = list[j+1];
+        list[j+1] = temp;
+      }
+    }
+  }
+};
+
+const addSerial = (list) => {
+  let i;
+  for (i = 0; i < list.length; i++) {
+    list[i].order = i + 1;
+  }
+};
 
 class App extends React.Component {
   constructor(props) {
@@ -127,21 +180,24 @@ class App extends React.Component {
       sevendayCurrency 
     } = this.state;
 
+
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!(isTodayLoaded && isYesterdayLoaded && isSevendayLoaded)) {
       return <div>Loading...</div>;
     } else {
+      const newList = setList(todayCurrency, yesterdayCurrency, sevendayCurrency);
+      listOrder(newList);
+      addSerial(newList);
+
       return (
+        
         <Layout>
         <Head>TOP Coins by Market Cap</Head>
         <Title/>
         <hr/>
-        <CoinDisplay lists={lists} />
+        <CoinDisplay lists={newList} />
         <hr/>
-        <div>
-          {console.log(todayCurrency[0].Open)}
-        </div>
       </Layout>
       );
     }
