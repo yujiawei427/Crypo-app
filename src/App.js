@@ -38,30 +38,79 @@ const lists = [{
 }
 ];
 
+const today = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}T13:00:00.000+00:00`;
+const assumToday = `2019-12-03T13:00:00.000+00:00` //assume Dec 04,2019 is today
+const assumYesterday = `2019-12-02T13:00:00.000+00:00`
+const assumSevenday = `2019-11-26T13:00:00.000+00:00`
+const url = `https://crypo-api.herokuapp.com/currencies/` + assumToday;
+const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumYesterday;
+const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumSevenday;
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
-      items: {}
+      isTodayLoaded: false,
+      isYesterdayLoaded: false,
+      isSevendayLoaded: false,
+      todayCurrency: [],
+      yesterdayCurrency: [],
+      sevendayCurrency: [],
     };
   }
 
   componentDidMount() {
+
     //has already pushed to heroku if not works use localhost: http://localhost:3001/currency
-    fetch('https://crypo-api.herokuapp.com/currency') 
+    
+    fetch(url) 
       .then(res => res.json())
       .then(
         (result) => {
           this.setState({
-            isLoaded: true,
-            items: result
+            isTodayLoaded: true,
+            todayCurrency: result
           });
         },
         (error) => {
           this.setState({
-            isLoaded: true,
+            isTodayLoaded: true,
+            error
+          });
+        }
+      )
+
+      fetch(yesterdayUrl) 
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isYesterdayLoaded: true,
+            yesterdayCurrency: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isYesterdayLoaded: true,
+            error
+          });
+        }
+      )
+
+      fetch(sevendayUrl) 
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isSevendayLoaded: true,
+            sevendayCurrency: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isSevendayLoaded: true,
             error
           });
         }
@@ -69,11 +118,18 @@ class App extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, items } = this.state;
+    const { error,
+      isTodayLoaded,
+      todayCurrency,
+      isYesterdayLoaded,
+      yesterdayCurrency,
+      isSevendayLoaded,
+      sevendayCurrency 
+    } = this.state;
 
     if (error) {
       return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
+    } else if (!(isTodayLoaded && isYesterdayLoaded && isSevendayLoaded)) {
       return <div>Loading...</div>;
     } else {
       return (
@@ -84,6 +140,7 @@ class App extends React.Component {
         <CoinDisplay lists={lists} />
         <hr/>
         <div>
+          {console.log(todayCurrency[0].Open)}
         </div>
       </Layout>
       );
