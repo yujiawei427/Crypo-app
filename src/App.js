@@ -50,9 +50,9 @@ const today = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Da
 const assumToday = `2019-12-03T13:00:00.000+00:00`; //assume Dec 04,2019 is today
 const assumYesterday = `2019-12-02T13:00:00.000+00:00`;
 const assumSevenday = `2019-11-26T13:00:00.000+00:00`;
-const url = `https://crypo-api.herokuapp.com/currencies/` + assumToday;
-const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumYesterday;
-const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/` + assumSevenday;
+const url = `https://crypo-api.herokuapp.com/currencies/${assumToday}`;
+const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/${assumYesterday}`;
+const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/${assumSevenday}`;
 
 const calcDifference = (current, old) => {
   return (current - old)/current ;
