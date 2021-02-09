@@ -19,37 +19,10 @@ const CurrencyItem = styled.ul`
   margin-left: -40px;
 `;
 
-const lists = [{
-  order: 1,
-  coinName: "tezos",
-  price: 1.25,
-  oneDay: 0.023,
-  sevenDays: 0.078,
-  volume: 46048752,
-  marketCap: 824588509
-}, {
-  order: 2,
-  coinName: "bitcoin",
-  price: 7320.13,
-  oneDay: 0.1,
-  sevenDays: 0.07,
-  volume: 21664240918,
-  marketCap: 131143073943
-}, {
-  order: 3,
-  coinName: "bnb",
-  price: 15.28,
-  oneDay: 0.9,
-  sevenDays: 0.19,
-  volume: 237605471,
-  marketCap: 2376597490
-}
-];
-
 const today = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}T13:00:00.000+00:00`;
-const assumToday = `2019-12-03T13:00:00.000+00:00`; //assume Dec 04,2019 is today
-const assumYesterday = `2019-12-02T13:00:00.000+00:00`;
-const assumSevenday = `2019-11-26T13:00:00.000+00:00`;
+const assumToday = '2019-12-03T13:00:00.000+00:00'; //assume Dec 04,2019 is today
+const assumYesterday = '2019-12-02T13:00:00.000+00:00';
+const assumSevenday = '2019-11-26T13:00:00.000+00:00';
 const url = `https://crypo-api.herokuapp.com/currencies/${assumToday}`;
 const yesterdayUrl = `https://crypo-api.herokuapp.com/currencies/${assumYesterday}`;
 const sevendayUrl = `https://crypo-api.herokuapp.com/currencies/${assumSevenday}`;
@@ -58,39 +31,40 @@ const calcDifference = (current, old) => {
   return (current - old)/current ;
 };
 
-const matchHistory = (name, list) => {
-  let i;
-  for (i = 0; i < list.length; i++) {
-    if (list[i].Currency === name)
-      return list[i].Close;
-  }
-};
+
+const matchHistory = (name, list) => (
+  list.reduce((result, element) => {
+    if (element.Currency === name)
+      result = result + element.Close;
+    return result;
+  }, '')
+);
 
 const beNum = (number) => {
-  return Number(number.split(",").join(""));
+  return Number(number.split(',').join(''));
 };
 
 const setList = (list, yesterdayList, sevendayList) => {
   let newList = [];
-  let i;
-  for (i = 0; i < list.length; i++) {
+  list.map(element => {
+    const yesterdayClose = matchHistory(element.Currency, yesterdayList);
+    const sevendayClose = matchHistory(element.Currency, sevendayList);
+    console.log(element.Currency);
     newList.push({});
-    newList[i].coinName = list[i].Currency;
-    newList[i].price = beNum(list[i].Close);
-    newList[i].marketCap = beNum(list[i]["Market Cap"]);
-    newList[i].volume = beNum(list[i].Volume);
-    newList[i].oneDay = calcDifference(beNum(list[i].Close) ,beNum(matchHistory(list[i].Currency, yesterdayList)));
-    newList[i].sevenDays = calcDifference(beNum(list[i].Close) ,beNum(matchHistory(list[i].Currency, sevendayList)));
-    
-  }
-
-  return newList
+    const newListLength = newList.length - 1;
+    newList[newListLength].coinName = element.Currency;
+    newList[newListLength].price = beNum(element.Close);
+    newList[newListLength].marketCap = beNum(element['Market Cap']);
+    newList[newListLength].volume = beNum(element.Volume);
+    newList[newListLength].oneDay = calcDifference(beNum(element.Close) ,beNum(yesterdayClose));
+    newList[newListLength].sevenDays = calcDifference(beNum(element.Close) ,beNum(sevendayClose));
+  });
+  return newList;
 };
 
 const listOrder = (list) => {
-  let temp, i, j;
-  for (i = 0; i < list.length - 1; i++) {
-    for (j = 0; j < list.length - 1 - i; j++) {
+  for (let i = 0, temp; i < list.length - 1; i++) {
+    for (let j = 0; j < list.length - 1 - i; j++) {
       if (list[j].marketCap < list[j+1].marketCap) {
         temp = list[j];
         list[j] = list[j+1];
@@ -100,11 +74,17 @@ const listOrder = (list) => {
   }
 };
 
+// const listOrder = (list) => {
+//   const result = [];
+//   list.map
+// }
+
 const addSerial = (list) => {
-  let i;
-  for (i = 0; i < list.length; i++) {
-    list[i].order = i + 1;
-  }
+  let i = 0;
+  list.map(element => {
+    element.order = i + 1;
+    i++;
+  })
 };
 
 class App extends React.Component {
@@ -122,9 +102,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-
     //has already pushed to heroku if not works use localhost: http://localhost:3001/currency
-    
     fetch(url) 
       .then(res => res.json())
       .then(
@@ -141,7 +119,7 @@ class App extends React.Component {
           });
         }
       )
-
+ 
       fetch(yesterdayUrl) 
       .then(res => res.json())
       .then(
